@@ -10,7 +10,10 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit) {
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    onNavigateToRegister: () -> Unit
+) {
     var user by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
 
@@ -25,10 +28,20 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(value = user, onValueChange = { user = it }, label = { Text("Usuário") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(
+                value = user,
+                onValueChange = { user = it },
+                label = { Text("Usuário") },
+                modifier = Modifier.fillMaxWidth()
+            )
             Spacer(Modifier.height(8.dp))
-            OutlinedTextField(value = pass, onValueChange = { pass = it }, label = { Text("Senha") },
-                visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(
+                value = pass,
+                onValueChange = { pass = it },
+                label = { Text("Senha") },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
             Spacer(Modifier.height(16.dp))
             Button(
                 onClick = { onLoginSuccess() },
@@ -36,6 +49,10 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 enabled = user.isNotBlank() && pass.isNotBlank()
             ) {
                 Text("Entrar")
+            }
+            Spacer(Modifier.height(8.dp))
+            TextButton(onClick = onNavigateToRegister) {
+                Text("Criar nova conta")
             }
         }
     }
