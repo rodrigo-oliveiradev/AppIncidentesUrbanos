@@ -31,10 +31,11 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = "login"
                     ) {
+                        // Tela de Login
                         composable("login") {
                             LoginScreen(
                                 onLoginSuccess = {
-                                    navController.navigate("incidents") {
+                                    navController.navigate("dashboard") {
                                         popUpTo("login") { inclusive = true }
                                     }
                                 },
@@ -44,12 +45,12 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        // Tela de Cadastro
                         composable("register") {
                             RegisterScreen(
                                 onRegisterSuccess = {
-                                    navController.navigate("incidents") {
-                                        popUpTo("login") { inclusive = true }
-                                    }
+                                    // Após cadastro, volta para Login
+                                    navController.popBackStack()
                                 },
                                 onNavigateToLogin = {
                                     navController.popBackStack()
@@ -57,6 +58,19 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        // Tela Home (Dashboard)
+                        composable("dashboard") {
+                            DashboardScreen(
+                                userName = "Usuário", // futuramente vem do banco
+                                onLogout = {
+                                    navController.navigate("login") {
+                                        popUpTo("dashboard") { inclusive = true }
+                                    }
+                                }
+                            )
+                        }
+
+                        // Outras telas que virão depois
                         composable("incidents") {
                             IncidentsScreen(
                                 onAddClick = { navController.navigate("form") },
@@ -66,12 +80,6 @@ class MainActivity : ComponentActivity() {
 
                         composable("form") {
                             IncidentFormScreen(
-                                onBack = { navController.popBackStack() }
-                            )
-                        }
-
-                        composable("dashboard") {
-                            DashboardScreen(
                                 onBack = { navController.popBackStack() }
                             )
                         }
