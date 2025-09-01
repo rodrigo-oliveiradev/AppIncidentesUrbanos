@@ -9,10 +9,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.appdeincidentesurbanos.data.local.UserEntity
+import com.appdeincidentesurbanos.domain.repository.UserRepository
+import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
 @SuppressLint("UnrememberedMutableState")
@@ -26,6 +30,10 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val userRepo = remember { UserRepository(context) }
+
 
     val isFormValid by derivedStateOf {
         name.isNotBlank() &&
@@ -110,7 +118,17 @@ fun RegisterScreen(
             Spacer(Modifier.height(16.dp))
 
             Button(
-                onClick = { onRegisterSuccess() },
+                onClick = {
+                    scope.launch {
+                        val newUser = UserEntity(
+                            name = name,
+                            email = email,
+                            password = password
+                        )
+                        userRepo.registerUser(newUser)
+                        onRegisterSuccess()
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = isFormValid
             ) {
